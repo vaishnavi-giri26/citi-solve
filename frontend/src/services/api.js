@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-baseURL: "https://citi-solve2.onrender.com/api",
+baseURL: "https://citi-solve-backend.onrender.com/api",
 headers: {
 "Content-Type": "application/json"
 }
