@@ -10,26 +10,31 @@ dotenv.config();
 
 const app = express();
 
-/* CORS MUST BE FIRST */
-app.use(cors());
+/* CORS MUST COME FIRST */
+app.use(cors({
+origin: "https://citi-solve-frontend-gbqd.onrender.com",
+credentials: true
+}));
+
+/* Handle preflight */
 app.options("*", cors());
 
-/* BODY PARSER */
+/* Middleware */
 app.use(express.json());
 
-/* DATABASE */
+/* Connect database */
 connectdatabase();
 
-/* ROUTES */
+/* Routes */
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 
-/* TEST ROUTE */
+/* Test route */
 app.get("/", (req, res) => {
 res.send("API is running...");
 });
 
-/* START SERVER */
+/* Start server */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
