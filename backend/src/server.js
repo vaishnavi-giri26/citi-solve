@@ -11,33 +11,28 @@ dotenv.config();
 
 const app = express();
 
-/* DATABASE */
+// connect database
 connectdatabase();
 
-/* CORS */
-app.use(cors({
-origin: "*",
-methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-allowedHeaders: ["Content-Type","Authorization"],
-}));
-
-app.options("*", cors()); // handle preflight requests
-
-/* BODY PARSER */
+// middleware
 app.use(express.json());
 
-/* ROUTES */
+// allow all origins (removes Render CORS issues)
+app.use(cors());
+
+// routes
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 
-/* SERVER */
+// start server
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+.connect(process.env.MONGO_URI)
 .then(() => {
 console.log("MongoDB Connected");
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`);
 });
 })
-.catch(err => console.log(err));
+.catch((err) => console.log(err));
