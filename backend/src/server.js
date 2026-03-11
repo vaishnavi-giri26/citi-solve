@@ -11,39 +11,33 @@ dotenv.config();
 
 const app = express();
 
-/* ---------- DATABASE ---------- */
+/* DATABASE */
 connectdatabase();
 
-/* ---------- MIDDLEWARE ---------- */
+/* CORS */
+app.use(cors({
+origin: "*",
+methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+allowedHeaders: ["Content-Type","Authorization"],
+}));
+
+app.options("*", cors()); // handle preflight requests
+
+/* BODY PARSER */
 app.use(express.json());
 
-app.use(
-cors({
-origin: [
-"http://localhost:5173",
-"https://citi-solve-frontend-gbqd.onrender.com"
-],
-methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-credentials: true
-})
-);
-
-/* handle preflight */
-app.options("*", cors());
-
-/* ---------- ROUTES ---------- */
+/* ROUTES */
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 
-/* ---------- SERVER ---------- */
+/* SERVER */
 const PORT = process.env.PORT || 5000;
 
-mongoose
-.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
 .then(() => {
 console.log("MongoDB Connected");
 app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`);
 });
 })
-.catch((err) => console.log(err));
+.catch(err => console.log(err));
