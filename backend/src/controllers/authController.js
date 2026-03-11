@@ -1,111 +1,115 @@
-// 
-
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// Generate JWT Token
+/* Generate JWT Token */
 const generateToken = (id, role) => {
-  return jwt.sign(
-    { id, role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
+return jwt.sign(
+{ id, role },
+process.env.JWT_SECRET,
+{ expiresIn: "7d" }
+);
 };
 
-
-
-// =============================
-// REGISTER USER
-// =============================
+/* ============================= */
+/* REGISTER USER */
+/* ============================= */
 export const register = async (req, res) => {
-  try {
+try {
 
-    const { name, email, password, role } = req.body;
+```
+const { name, email, password, role } = req.body;
 
-    // check if user already exists
-    const existingUser = await User.findOne({ email });
+/* check existing user */
+const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists"
-      });
-    }
+if (existingUser) {
+  return res.status(400).json({
+    message: "User already exists"
+  });
+}
 
-    // create user
-    const user = await User.create({
-      name,
-      email,
-      password, // password will be hashed automatically by User schema
-      role: role || "citizen"
-    });
+/* hash password */
+const salt = await bcrypt.genSalt(10);
+const hashedPassword = await bcrypt.hash(password, salt);
 
-    // send response
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id, user.role)
-    });
+/* create user */
+const user = await User.create({
+  name,
+  email,
+  password: hashedPassword,
+  role: role || "citizen"
+});
 
-  } catch (error) {
+res.status(201).json({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  token: generateToken(user._id, user.role)
+});
+```
 
-    console.log("REGISTER ERROR:", error);
+} catch (error) {
 
-    res.status(500).json({
-      message: error.message
-    });
+```
+console.error("REGISTER ERROR:", error);
 
-  }
+res.status(500).json({
+  message: "Server error during registration"
+});
+```
+
+}
 };
 
-
-
-// =============================
-// LOGIN USER
-// =============================
+/* ============================= */
+/* LOGIN USER */
+/* ============================= */
 export const login = async (req, res) => {
 
-  try {
+try {
 
-    const { email, password } = req.body;
+```
+const { email, password } = req.body;
 
-    // check if user exists
-    const user = await User.findOne({ email });
+/* find user */
+const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(401).json({
-        message: "Invalid email or password"
-      });
-    }
+if (!user) {
+  return res.status(401).json({
+    message: "Invalid email or password"
+  });
+}
 
-    // compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+/* compare password */
+const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
-      return res.status(401).json({
-        message: "Invalid email or password"
-      });
-    }
+if (!isMatch) {
+  return res.status(401).json({
+    message: "Invalid email or password"
+  });
+}
 
-    // login success
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id, user.role)
-    });
+res.status(200).json({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  token: generateToken(user._id, user.role)
+});
+```
 
-  } catch (error) {
+} catch (error) {
 
-    console.log("LOGIN ERROR:", error);
+```
+console.error("LOGIN ERROR:", error);
 
-    res.status(500).json({
-      message: "Server error during login"
-    });
+res.status(500).json({
+  message: "Server error during login"
+});
+```
 
-  }
+}
 
 };
