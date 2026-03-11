@@ -13,18 +13,32 @@ const app = express();
 /* connect database */
 connectdatabase();
 
-/* CORS MUST COME FIRST */
-app.use(cors());
-
-/* allow preflight */
-app.options("*", cors());
-
 /* middleware */
 app.use(express.json());
+
+/* CORS FIX */
+app.use(
+cors({
+origin: [
+"http://localhost:5173",
+"https://citi-solve-frontend-gbqd.onrender.com"
+],
+methods: ["GET", "POST", "PUT", "DELETE"],
+credentials: true
+})
+);
+
+/* handle preflight */
+app.options("*", cors());
 
 /* routes */
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
+
+/* test route */
+app.get("/", (req, res) => {
+res.send("API is running...");
+});
 
 /* start server */
 const PORT = process.env.PORT || 5000;
