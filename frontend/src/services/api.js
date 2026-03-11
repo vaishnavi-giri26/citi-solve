@@ -1,56 +1,68 @@
 import axios from "axios";
 
-// Backend deployed URL
-const BASE_URL = "https://citi-solve2.onrender.com/api";
-
+/* backend url */
 const API = axios.create({
-  baseURL: BASE_URL
+baseURL: "https://citi-solve2.onrender.com/api",
+headers: {
+"Content-Type": "application/json"
+}
 });
 
-// Automatically attach token to every request
+/* attach token automatically */
 API.interceptors.request.use((req) => {
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = user?.token;
+const userData = localStorage.getItem("user");
 
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
+if (userData) {
+const user = JSON.parse(userData);
 
-  return req;
+```
+if (user?.token) {
+  req.headers.Authorization = `Bearer ${user.token}`;
+}
+```
+
+}
+
+return req;
 });
-// AUTH APIs
-export const authAPI = {
-  register: async (data) => {
-    const res = await API.post("/auth/register", data);
-    return res.data;
-  },
 
-  login: async (data) => {
-    const res = await API.post("/auth/login", data);
-    return res.data;
-  }
+/* auth APIs */
+export const authAPI = {
+
+register: async (data) => {
+const res = await API.post("/auth/register", data);
+return res.data;
+},
+
+login: async (data) => {
+const res = await API.post("/auth/login", data);
+return res.data;
+}
+
 };
 
-// COMPLAINT APIs
+/* complaint APIs */
 export const complaintsAPI = {
-  createComplaint: async (data) => {
-    const res = await API.post("/complaints", data);
-    return res.data;
-  },
 
-  getMyComplaints: async () => {
-    const res = await API.get("/complaints/my");
-    return res.data;
-  },
+createComplaint: async (data) => {
+const res = await API.post("/complaints", data);
+return res.data;
+},
 
-  getComplaints: async () => {
-    const res = await API.get("/complaints");
-    return res.data;
-  },
+getMyComplaints: async () => {
+const res = await API.get("/complaints/my");
+return res.data;
+},
 
-  updateStatus: async (id, status) => {
-    const res = await API.put(`/complaints/${id}/status`, { status });
-    return res.data;
-  }
+getComplaints: async () => {
+const res = await API.get("/complaints");
+return res.data;
+},
+
+updateStatus: async (id, status) => {
+const res = await API.put(`/complaints/${id}/status`, { status });
+return res.data;
+}
+
 };
