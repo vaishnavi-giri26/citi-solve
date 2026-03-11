@@ -10,32 +10,15 @@ dotenv.config();
 
 const app = express();
 
-/* CONNECT DATABASE */
-connectdatabase();
+/* CORS MUST BE FIRST */
+app.use(cors());
+app.options("*", cors());
 
-/* MIDDLEWARE */
+/* BODY PARSER */
 app.use(express.json());
 
-/* FORCE CORS FOR ALL REQUESTS */
-app.use((req, res, next) => {
-res.header("Access-Control-Allow-Origin", "*");
-res.header(
-"Access-Control-Allow-Headers",
-"Origin, X-Requested-With, Content-Type, Accept, Authorization"
-);
-res.header(
-"Access-Control-Allow-Methods",
-"GET, POST, PUT, DELETE, OPTIONS"
-);
-
-if (req.method === "OPTIONS") {
-return res.sendStatus(200);
-}
-
-next();
-});
-
-app.use(cors());
+/* DATABASE */
+connectdatabase();
 
 /* ROUTES */
 app.use("/api/auth", authRoutes);
