@@ -17,22 +17,21 @@ connectdatabase();
 /* middleware */
 app.use(express.json());
 
+/* CORS FIX */
 app.use(cors({
-origin: [
-"http://localhost:5173",
-"https://citi-solve-frontend-gbqd.onrender.com"
-],
+origin: "*",
 methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-credentials: true
+allowedHeaders: ["Content-Type","Authorization"]
 }));
 
+/* allow preflight */
 app.options("*", cors());
 
 /* routes */
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 
-/* start server */
+/* server start */
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(process.env.MONGO_URI)
