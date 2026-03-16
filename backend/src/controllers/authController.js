@@ -73,7 +73,7 @@ try {
 const { email, password } = req.body;
 
 /* find user */
-const user = await User.findOne({ email }).select("+password");
+const user = await User.findOne({ email });
 
 if (!user) {
   return res.status(401).json({
