@@ -76,7 +76,8 @@ const Registration = () => {
 
     try {
 
-      const response = await authAPI.register(formData);
+      const { confirmPassword, ...dataToSend } = formData;
+const response = await authAPI.register(dataToSend);
 
       console.log("Registration successful:", response);
 
