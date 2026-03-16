@@ -28,15 +28,13 @@ if (existingUser) {
   });
 }
 
-/* hash password */
-const salt = await bcrypt.genSalt(10);
-const hashedPassword = await bcrypt.hash(password, salt);
+
 
 /* create user */
 const user = await User.create({
   name,
   email,
-  password: hashedPassword,
+  password: password,
   role: role || "citizen"
 });
 
@@ -73,7 +71,7 @@ try {
 const { email, password } = req.body;
 
 /* find user */
-const user = await User.findOne({ email }).select("+password");
+const user = await User.findOne({ email });
 
 if (!user) {
   return res.status(401).json({
