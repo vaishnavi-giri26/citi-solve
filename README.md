@@ -8,8 +8,8 @@ CitiSolve is a full-stack web application designed to help citizens report local
 
 (Add your deployed links if available)
 
-- 🌐 Frontend:
-- ⚙️ Backend:
+- 🌐 Frontend:https://citi-solve-frontend-gbqd.onrender.com
+- ⚙️ Backend:https://citi-solve-backend.onrender.com
 
 ---
 
